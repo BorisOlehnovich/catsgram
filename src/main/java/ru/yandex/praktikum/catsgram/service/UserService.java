@@ -3,6 +3,7 @@ package ru.yandex.praktikum.catsgram.service;
 import org.springframework.stereotype.Service;
 import ru.yandex.praktikum.catsgram.exception.InvalidEmailException;
 import ru.yandex.praktikum.catsgram.exception.UserAlreadyExistException;
+import ru.yandex.praktikum.catsgram.exception.UserNotFoundException;
 import ru.yandex.praktikum.catsgram.model.User;
 
 import java.util.Collection;
@@ -37,8 +38,8 @@ public class UserService {
     }
 
     public User findUserByEmail (String email) {
-        if (email == null) {
-            return null;
+        if (email == null || !users.containsKey(email)){
+            throw new UserNotFoundException("Пользователь с таким email не найден");
         }
         return users.get(email);
     }
