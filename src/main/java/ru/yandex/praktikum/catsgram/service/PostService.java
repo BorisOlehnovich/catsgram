@@ -8,8 +8,10 @@ import ru.yandex.praktikum.catsgram.exception.UserNotFoundException;
 import ru.yandex.praktikum.catsgram.model.Post;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -28,9 +30,16 @@ public class PostService {
     }
 
 
-    public Collection<Post> findAll() {
-        log.debug("Текущее количество постов {}", posts.size());
-        return posts.values();
+    public Collection<Post> findAll(Integer size, Integer from, String sort) {
+        return posts.values().stream().sorted((o1, o2) -> {
+            if (sort.equals("asc")) {
+                return o1.getCreationDate().compareTo(o2.getCreationDate());
+            } else return -1 * o1.getCreationDate().compareTo(o2.getCreationDate());
+        })
+                .skip(from)
+                .limit(size)
+                .collect(Collectors.toList());
+
     }
 
     public Post createPost(Post post){
