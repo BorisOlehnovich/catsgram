@@ -42,6 +42,18 @@ public class PostService {
 
     }
 
+    public Collection<Post> findAllByEmail(String email, Integer size, String sort){
+        return posts.values().stream()
+                .filter(post -> email.equals(post.getAuthor()))
+                .sorted((o1, o2) -> {
+                    if (sort.equals("asc")) {
+                        return o1.getCreationDate().compareTo(o2.getCreationDate());
+                    } else return -1 * o1.getCreationDate().compareTo(o2.getCreationDate());
+                })
+                .limit(size)
+                .collect(Collectors.toList());
+    }
+
     public Post createPost(Post post){
         String author = post.getAuthor();
         if (userService.findUserByEmail(author) == null) {

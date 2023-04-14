@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.praktikum.catsgram.exception.IncorrectParameterException;
 import ru.yandex.praktikum.catsgram.model.Post;
 import ru.yandex.praktikum.catsgram.service.PostService;
 
@@ -24,10 +25,13 @@ public class PostController {
                                     @RequestParam(value = "sort", defaultValue = "desc", required = false) String sort) {
         log.info("Запрос последних " + size + " постов получен, " + "порядок сортировки: " + sort);
         if(!(sort.equals("asc") || sort.equals("desc"))){
-            throw new IllegalArgumentException("неправильно указан порядок сортировки");
+            throw new IncorrectParameterException("sort");
+        }
+        if (page < 0) {
+            throw new IncorrectParameterException("page");
         }
         if(page < 0 || size <= 0){
-            throw new IllegalArgumentException("неверно указан номер страницы или размер списка");
+            throw new IncorrectParameterException("size");
         }
 
         Integer from = page * size;
